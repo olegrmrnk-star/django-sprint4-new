@@ -50,5 +50,4 @@ def get_toxicity_score(text: str) -> float:
 def is_toxic(text: str) -> bool:
     """Определить, достигла ли оценка заданного порога."""
     score = get_toxicity_score(text)
-    print(f"--- ML SCORE: {score} ---")
     return score >= TOXICITY_THRESHOLD

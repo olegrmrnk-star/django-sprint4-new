@@ -3,11 +3,10 @@ from django.shortcuts import redirect, render, get_object_or_404
 from django.db.models import Count
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
-from django.http import HttpResponse, Http404
+from django.http import Http404
 from django.core.paginator import Paginator
 
 from .models import Category, Post, Comment
-from users.models import Profile
 from .forms import ProfileEditForm, PostForm, CommentForm
 
 
@@ -49,9 +48,10 @@ def post_detail(request, post_id):
     template = 'blog/detail.html'
     post = get_object_or_404(Post, id=post_id,)
     if request.user != post.author:
-        is_ready = (post.is_published
-            and post.pub_date <= timezone.now()
-            and post.category and post.category.is_published)
+        is_ready = (
+            post.is_published and post.pub_date <= timezone.now()
+            and post.category and post.category.is_published
+        )
         if not is_ready:
             raise Http404
     form = CommentForm() if request.user.is_authenticated else None
@@ -170,7 +170,7 @@ def add_comment(request, post_id):
     return render(
         request,
         'blog/detail.html',
-        {'form': form, 'post': post, 'comments': post.comments.all(),}
+        {'form': form, 'post': post, 'comments': post.comments.all()}
     )
 
 
