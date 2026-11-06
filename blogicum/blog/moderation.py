@@ -22,7 +22,7 @@ def get_model_and_tokenizer():
     """
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
-    model.eval()  # Важно: режим оценки, а не обучения
+    model.eval()
     return model, tokenizer
 
 
