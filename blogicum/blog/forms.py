@@ -1,8 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
+
+from core.constants import MODERATION_ERROR
 from .models import Comment, Post
 from .moderation import is_toxic
-from core.constants import MODERATION_ERROR
 
 
 class ProfileEditForm(forms.ModelForm):
@@ -36,7 +37,6 @@ class CommentForm(forms.ModelForm):
 
     def clean_text(self):
         text = self.cleaned_data['text']
-        print("Валидация текста:", text, "Результат is_toxic:", is_toxic(text))
         if is_toxic(text):
             raise forms.ValidationError(MODERATION_ERROR)
         return text

@@ -30,6 +30,13 @@ def get_published_posts(category=None):
     return queryset.filter(**base_filters)
 
 
+def get_paginated_context(object_list, request, per_page=10):
+    paginator = Paginator(object_list, per_page)
+    page_number = request.GET.get('page')
+    pg_obj = paginator.get_page(page_number)
+    return pg_obj
+
+
 def index(request):
     template = 'blog/index.html'
     post_list = get_published_posts()
@@ -37,9 +44,7 @@ def index(request):
     post_list = post_list.select_related(
         'category',
     ).order_by('-pub_date')
-    paginator = Paginator(post_list, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = get_paginated_context(post_list, request)
     context = {'page_obj': page_obj}
     return render(request, template, context)
 
@@ -71,9 +76,7 @@ def category_posts(request, category_slug):
         category=category
     ).order_by('-pub_date')
     posts = posts.annotate(comment_count=Count('comments'))
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = get_paginated_context(posts, request)
     context = {'category': category, 'page_obj': page_obj}
     return render(request, template, context)
 
@@ -104,9 +107,7 @@ def profile(request, username):
     posts = posts.annotate(
         comment_count=Count('comments')
     ).order_by('-pub_date')
-    paginator = Paginator(posts, 10)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
+    page_obj = get_paginated_context(posts, request)
     context = {'profile': user_obj, 'page_obj': page_obj}
     return render(request, template, context)
 

@@ -1,12 +1,15 @@
+from functools import cache
+
 import torch
 from transformers import (
     AutoModelForSequenceClassification,
     AutoTokenizer,
 )
-from functools import cache
+
 from core.constants import TOXICITY_THRESHOLD
 
 
+COMMENT_MAX_LENGTH = 512
 MODEL_NAME = 'cointegrated/rubert-tiny-toxicity'
 
 
@@ -17,7 +20,6 @@ def get_model_and_tokenizer():
     @cache гарантирует, что загрузка произойдет ровно один раз
     за жизнь процесса.
     """
-    print("Загрузка модели ML (это произойдёт только один раз)...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME)
     model.eval()  # Важно: режим оценки, а не обучения
@@ -33,7 +35,7 @@ def get_toxicity_score(text: str) -> float:
         return_tensors='pt',
         truncation=True,
         padding=True,
-        max_length=512
+        max_length=COMMENT_MAX_LENGTH
     )
 
     with torch.inference_mode():
