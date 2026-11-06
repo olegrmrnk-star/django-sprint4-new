@@ -13,7 +13,7 @@ from .forms import ProfileEditForm, PostForm, CommentForm
 def get_published_posts(category=None):
     """
     Возвращает QuerySet опубликованных постов.
-    Если передан category, фильтрует только по этой категории.
+    Если передан category, то фильтрует только по этой категории.
     """
     queryset = Post.objects.all()
 
